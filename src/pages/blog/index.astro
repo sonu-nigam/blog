@@ -1,0 +1,46 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import { CollectionEntry, getCollection } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()
+);
+
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body class="max-w-2xl mx-auto antialiased">
+		<Header title={SITE_TITLE} />
+		<main>
+			<section>
+				<ul class="px-3">
+					{posts.map((post) => (
+						<li class="mb-10">
+							<div class="flex gap-4 items-stretch text-slate-500 font-light my-4">
+								<FormattedDate date={post.data.pubDate} />
+							</div>
+							<h2 class="mb-4">
+								<a href={`/blog/${post.slug}/`} class="text-2xl font-normal antialiased hover:underline">
+									{post.data.title}
+								</a>
+							</h2>
+							<p class="mb-4 text-lg antialiased">
+								{post.data.description}
+							</p>
+							<a href={`/blog/${post.slug}/`} class="underline antialiased tex">Read Article</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
